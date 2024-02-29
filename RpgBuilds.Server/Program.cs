@@ -1,3 +1,5 @@
+using MongoDB.Driver;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -8,6 +10,15 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+
+var connectionString = Environment.GetEnvironmentVariable("MONGODB_URI");
+if (connectionString == null)
+{
+    Console.WriteLine("You must set your 'MONGODB_URI' environment variable.");
+    Environment.Exit(0);
+}
+var client = new MongoClient(connectionString);
+var db = client.GetDatabase("Cluster0");
 
 app.UseDefaultFiles();
 app.UseStaticFiles();
