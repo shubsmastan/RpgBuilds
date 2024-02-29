@@ -24,6 +24,7 @@ var app = builder.Build();
 
 app.UseDefaultFiles();
 app.UseStaticFiles();
+app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod().WithOrigins("https://localhost:5173"));
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

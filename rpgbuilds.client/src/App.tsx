@@ -1,22 +1,32 @@
 import { useEffect, useState } from 'react';
 import './App.css';
 
-interface Forecast {
-  date: string;
-  temperatureC: number;
-  temperatureF: number;
-  summary: string;
+interface Build {
+  id: string;
+  name: string;
+  characterName: string;
+  characterClass: string;
 }
 
 function App() {
-  const [forecasts, setForecasts] = useState<Forecast[]>();
+  const [builds, setBuilds] = useState<Build[]>();
+
+  async function populateBuildData() {
+    const response = await fetch('https://localhost:7122/api/build');
+    try {
+      const data = await response.json();
+      setBuilds(data);
+    } catch (err) {
+      console.log(response);
+    }
+  }
 
   useEffect(() => {
-    populateWeatherData();
+    populateBuildData();
   }, []);
 
   const contents =
-    forecasts === undefined ? (
+    builds === undefined ? (
       <p>
         <em>
           Loading... Please refresh once the ASP.NET backend has started. See{' '}
@@ -30,19 +40,17 @@ function App() {
       <table className="table table-striped" aria-labelledby="tabelLabel">
         <thead>
           <tr>
-            <th>Date</th>
-            <th>Temp. (C)</th>
-            <th>Temp. (F)</th>
-            <th>Summary</th>
+            <th>Build Name</th>
+            <th>Character Name</th>
+            <th>Class</th>
           </tr>
         </thead>
         <tbody>
-          {forecasts.map((forecast) => (
-            <tr key={forecast.date}>
-              <td>{forecast.date}</td>
-              <td>{forecast.temperatureC}</td>
-              <td>{forecast.temperatureF}</td>
-              <td>{forecast.summary}</td>
+          {builds.map((build) => (
+            <tr key={build.id}>
+              <td>{build.name}</td>
+              <td>{build.characterName}</td>
+              <td>{build.characterClass}</td>
             </tr>
           ))}
         </tbody>
@@ -51,17 +59,11 @@ function App() {
 
   return (
     <div>
-      <h1 id="tabelLabel">Weather forecast</h1>
+      <h1 id="tabelLabel">Your Builds</h1>
       <p>This component demonstrates fetching data from the server.</p>
       {contents}
     </div>
   );
-
-  async function populateWeatherData() {
-    const response = await fetch('weatherforecast');
-    const data = await response.json();
-    setForecasts(data);
-  }
 }
 
 export default App;
